@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Network Animation</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: black;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="content">Teging — nuqtalar ko‘payadi!</div>
+
+<script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const pointCount = 100;
+    const maxDistance = 150;
+    const points = [];
+
+    // Random nuqtalarni yaratish
+    for (let i = 0; i < pointCount; i++) {
+        points.push(createRandomPoint());
+    }
+
+    function createRandomPoint(x = Math.random() * width, y = Math.random() * height) {
+        return {
+            x,
+            y,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2
+        };
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Chiziqlar
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const dx = points[i].x - points[j].x;
+                const dy = points[i].y - points[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < maxDistance) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - distance / maxDistance).toFixed(2)})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(points[i].x, points[i].y);
+                    ctx.lineTo(points[j].x, points[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Nuqtalarni harakatlantirish
+        for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // To‘siqqa urilsa teskari yo‘nalishda
+            if (p.x <= 0 || p.x >= width) p.vx *= -1;
+            if (p.y <= 0 || p.y >= height) p.vy *= -1;
+
+            // Nuqta chizish
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Yangi nuqta qo‘shish: sichqoncha yoki sensor bilan
+    function addPoint(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX || e.touches[0].clientX;
+        const y = e.clientY || e.touches[0].clientY;
+        points.push(createRandomPoint(x - rect.left, y - rect.top));
+    }
+
+    canvas.addEventListener('mousedown', addPoint);
+    canvas.addEventListener('touchstart', addPoint);
+
+    // Oyna o‘lchami o‘zgarganda canvasni moslashtirish
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+</script>
+</body>
+</html>
