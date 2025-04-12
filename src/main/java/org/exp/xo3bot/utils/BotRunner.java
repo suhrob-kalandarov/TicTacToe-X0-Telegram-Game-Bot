@@ -13,7 +13,7 @@ import org.exp.xo3bot.handlers.CallbackHandler;
 import org.exp.xo3bot.handlers.InlineHandler;
 import org.exp.xo3bot.handlers.MessageHandler;
 
-import static org.exp.xo3bot.logsettings.Log.log;
+import static org.exp.xo3bot.utils.Log.log;
 
 @RequiredArgsConstructor
 @Component

@@ -1,31 +1,68 @@
 package org.exp.xo3bot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.enums.Language;
+import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.entities.stats.Language;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User {
+    @Id
+    private Long id;
 
+    @Column(nullable = false)
     private String fullname;
+
+    @Column(nullable = false)
     private String username;
+
+    @Enumerated(EnumType.STRING)
     private Language language;
 
     @Column(name = "language_code")
     private String languageCode;
 
-    @Column(name = "game_id")
-    private Long gameId;
-
     @Column(nullable = false)
     private boolean blocked = false;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Game game;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Achievement> results = new ArrayList<>();
+
+    @PostPersist
+    public void createResults() {
+        // Foydalanuvchi uchun har bir qiyinlik darajasi uchun Result yozuvlarini yaratish
+        for (Difficulty difficulty : Difficulty.values()) {
+            this.results.add(
+                    Achievement.builder()
+                            .difficulty(difficulty)
+                            .winCount(0)
+                            .loseCount(0)
+                            .drawCount(0)
+                            .user(this)
+                            .build()
+            );
+        }
+    }
 }

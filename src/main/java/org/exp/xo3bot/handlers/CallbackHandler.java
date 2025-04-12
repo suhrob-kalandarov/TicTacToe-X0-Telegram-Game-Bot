@@ -1,7 +1,7 @@
 package org.exp.xo3bot.handlers;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
-import org.exp.xo3bot.faces.Handler;
+import org.exp.xo3bot.usekeys.Handler;
 import org.springframework.stereotype.Component;
 
 @Component

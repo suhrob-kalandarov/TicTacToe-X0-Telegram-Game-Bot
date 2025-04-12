@@ -1,10 +1,9 @@
 package org.exp.xo3bot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.enums.DifficultyLevel;
-import org.exp.xo3bot.entities.enums.GameStatus;
+import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.entities.stats.GameStatus;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +14,11 @@ import org.exp.xo3bot.entities.enums.GameStatus;
 @Entity
 public class Game extends BaseEntity {
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
 
     @Column(name = "message_id")
@@ -29,6 +33,6 @@ public class Game extends BaseEntity {
     @Column(name = "game_board")
     private byte[] gameBoard;
 
-    @Column(name = "difficulty_level")
-    private DifficultyLevel difficultyLevel;
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
 }

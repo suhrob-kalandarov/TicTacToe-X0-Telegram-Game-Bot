@@ -1,4 +1,4 @@
-package org.exp.xo3bot.logsettings;
+package org.exp.xo3bot.utils;
 
 public class Log {
     public static void log(String message) {

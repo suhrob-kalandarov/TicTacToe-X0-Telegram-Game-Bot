@@ -2,8 +2,10 @@ package org.exp.xo3bot.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
-import org.exp.xo3bot.entities.enums.GameStatus;
+import org.exp.xo3bot.entities.stats.GameStatus;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,6 +16,7 @@ import org.exp.xo3bot.entities.enums.GameStatus;
 @Entity
 public class MultiGame extends BaseEntity{
 
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
 
     @Column(name = "creator_id")
