@@ -19,7 +19,7 @@ public class Game extends BaseEntity {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private GameStatus status;
+    private GameStatus status = GameStatus.CREATED;
 
     @Column(name = "message_id")
     private Integer messageId;
@@ -35,4 +35,8 @@ public class Game extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
+
+    public Game(User user) {
+        this.user = user;
+    }
 }

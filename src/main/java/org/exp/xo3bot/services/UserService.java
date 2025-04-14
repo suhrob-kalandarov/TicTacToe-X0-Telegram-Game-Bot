@@ -2,14 +2,14 @@ package org.exp.xo3bot.services;
 
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
-import org.exp.xo3bot.repos.UserRepository;
+import org.exp.xo3bot.repos.myUserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final myUserRepository userRepository;
 
     public String generateDefaultUsername() {
         long i = 1;

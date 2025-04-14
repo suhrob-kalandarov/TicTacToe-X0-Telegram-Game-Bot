@@ -10,6 +10,7 @@ import org.exp.xo3bot.entities.stats.Difficulty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "achievements")
 public class Achievement extends BaseEntity {
 
     @ManyToOne

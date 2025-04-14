@@ -21,10 +21,10 @@ public class User {
     @Id
     private Long id;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String fullname;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String username;
 
     @Enumerated(EnumType.STRING)
@@ -33,16 +33,16 @@ public class User {
     @Column(name = "language_code")
     private String languageCode;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private boolean blocked = false;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Game game;
@@ -50,6 +50,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Achievement> results = new ArrayList<>();
 
+    /*
     @PostPersist
     public void createResults() {
         // Foydalanuvchi uchun har bir qiyinlik darajasi uchun Result yozuvlarini yaratish
@@ -65,4 +66,5 @@ public class User {
             );
         }
     }
+    */
 }
