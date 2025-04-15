@@ -2,7 +2,6 @@ package org.exp.xo3bot.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Difficulty;
 import org.exp.xo3bot.entities.stats.Language;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -48,7 +47,7 @@ public class User {
     private Game game;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Achievement> results = new ArrayList<>();
+    private List<Result> results = new ArrayList<>();
 
     /*
     @PostPersist

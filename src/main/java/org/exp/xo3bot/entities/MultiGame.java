@@ -8,7 +8,7 @@ import lombok.*;
 import org.exp.xo3bot.entities.stats.GameStatus;
 
 
-@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor

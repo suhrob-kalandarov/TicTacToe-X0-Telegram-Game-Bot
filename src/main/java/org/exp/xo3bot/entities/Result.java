@@ -1,17 +1,19 @@
 package org.exp.xo3bot.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.exp.xo3bot.entities.stats.Difficulty;
 
-//@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "achievements")
-public class Achievement extends BaseEntity {
+@Table(name = "results")
+public class Result extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
