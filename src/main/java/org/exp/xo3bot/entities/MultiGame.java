@@ -1,11 +1,10 @@
 package org.exp.xo3bot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.*;
+import org.exp.xo3bot.entities.stats.Difficulty;
 import org.exp.xo3bot.entities.stats.GameStatus;
+import org.exp.xo3bot.services.GameBoardConverter;
 
 
 //@EqualsAndHashCode(callSuper = true)
@@ -14,6 +13,7 @@ import org.exp.xo3bot.entities.stats.GameStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "multi_games")
 public class MultiGame extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
@@ -31,6 +31,16 @@ public class MultiGame extends BaseEntity{
     @Column(name = "player_o")
     private Long playerO;
 
-    @Column(name = "game_board")
-    private byte[] gameBoard;
+    @Convert(converter = GameBoardConverter.class)
+    @Column(name = "game_board", length = 50)
+    private int[][] gameBoard;
+
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+
+    public void initializeBoard() {
+        this.gameBoard = new int[3][3];
+    }
+
+
 }

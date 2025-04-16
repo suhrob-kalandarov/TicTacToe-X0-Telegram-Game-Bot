@@ -2,7 +2,7 @@ package org.exp.xo3bot.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.entities.stats.Level;
 
 //@EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,14 +18,6 @@ public class Achievement extends BaseEntity {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
+    private Level level;
 
-    @Column(name = "win_count")
-    private int winCount;
-
-    @Column(name = "lose_count")
-    private int loseCount;
-
-    @Column(name = "draw_count")
-    private int drawCount;
 }

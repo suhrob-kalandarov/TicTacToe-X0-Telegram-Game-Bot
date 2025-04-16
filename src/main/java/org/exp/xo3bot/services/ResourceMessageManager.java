@@ -17,6 +17,10 @@ public class ResourceMessageManager {
         this.bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
     }
 
+    public void loadBundle(String baseName, Locale locale) {
+        this.bundle = ResourceBundle.getBundle(baseName, locale);
+    }
+
     // Locale o'zgartirish uchun metod
     public void setLocale(Locale locale) {
         this.bundle = ResourceBundle.getBundle("messages", locale);

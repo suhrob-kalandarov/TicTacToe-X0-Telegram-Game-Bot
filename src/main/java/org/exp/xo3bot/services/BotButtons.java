@@ -2,6 +2,7 @@ package org.exp.xo3bot.services;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import org.exp.xo3bot.entities.stats.Difficulty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,8 @@ public class BotButtons {
                 .addRow(new InlineKeyboardButton(rm.getString(PLAY_WITH_BOT_BTN))
                                 .callbackData(PLAY_WITH_BOT_BTN),
                         new InlineKeyboardButton(rm.getString(PLAY_WITH_FRIEND_BTN))
-                                //.callbackData(PLAY_WITH_FRIEND_BTN)
-                                .switchInlineQuery(" ")
+                                .callbackData(PLAY_WITH_FRIEND_BTN)
+                                //.switchInlineQuery(" ")
                 )
                 .addRow(new InlineKeyboardButton(rm.getString(DIFFICULTY_LEVEL_BTN))
                         .callbackData(DIFFICULTY_LEVEL_BTN)
@@ -75,14 +76,14 @@ public class BotButtons {
     public InlineKeyboardMarkup genDifficultyLevelButtons(){
         return new InlineKeyboardMarkup()
                 .addRow(
-                        new InlineKeyboardButton(rm.getString(LEVEL_EASY)).callbackData("level_easy")
+                        new InlineKeyboardButton(rm.getString(LEVEL_EASY)).callbackData(LEVEL + Difficulty.EASY)
                 )
                 .addRow(
-                        new InlineKeyboardButton(rm.getString(LEVEL_AVERAGE)).callbackData("level_average"),
-                        new InlineKeyboardButton(rm.getString(LEVEL_DIFFICULT)).callbackData("level_difficult")
+                        new InlineKeyboardButton(rm.getString(LEVEL_AVERAGE)).callbackData(LEVEL + Difficulty.MEDIUM),
+                        new InlineKeyboardButton(rm.getString(LEVEL_DIFFICULT)).callbackData(LEVEL + Difficulty.HARD)
                 )
                 .addRow(
-                        new InlineKeyboardButton(rm.getString(LEVEL_EXTREME)).callbackData("level_extreme")
+                        new InlineKeyboardButton(rm.getString(LEVEL_EXTREME)).callbackData(LEVEL + Difficulty.EXTREME)
                 )
                 .addRow(
                         new InlineKeyboardButton(rm.getString(BACK_BUTTON_MSG)).callbackData("back_to_cabinet")
@@ -98,6 +99,15 @@ public class BotButtons {
                 )
                 .addRow(new InlineKeyboardButton(rm.getString(BACK_BUTTON_MSG))
                         .callbackData("back_to_cabinet")
+                );
+    }
+
+    public InlineKeyboardMarkup genStartLanguageButtons() {
+        return new InlineKeyboardMarkup()
+                .addRow(
+                        new InlineKeyboardButton("\uD83C\uDDFA\uD83C\uDDFFUzbek").callbackData("lang_uz"),
+                        new InlineKeyboardButton("\uD83C\uDDF7\uD83C\uDDFAРусский").callbackData("lang_ru"),
+                        new InlineKeyboardButton("\uD83C\uDDFA\uD83C\uDDF8English").callbackData("lang_en")
                 );
     }
 

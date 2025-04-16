@@ -44,7 +44,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Game game;
+    private BotGame game;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Result> results = new ArrayList<>();

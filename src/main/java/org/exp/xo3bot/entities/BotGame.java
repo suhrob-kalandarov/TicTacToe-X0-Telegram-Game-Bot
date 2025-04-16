@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.exp.xo3bot.entities.stats.Difficulty;
 import org.exp.xo3bot.entities.stats.GameStatus;
+import org.exp.xo3bot.services.GameBoardConverter;
 
 
 //@EqualsAndHashCode(callSuper = true)
@@ -12,7 +13,8 @@ import org.exp.xo3bot.entities.stats.GameStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Game extends BaseEntity {
+@Table(name = "bot_games")
+public class BotGame extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -30,13 +32,19 @@ public class Game extends BaseEntity {
     @Column(name = "bot_symbol")
     private String botSymbol;
 
-    @Column(name = "game_board")
-    private byte[] gameBoard;
+    @Convert(converter = GameBoardConverter.class)
+    @Column(name = "game_board", length = 50)
+    private int[][] gameBoard;
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    public Game(User user) {
+    public BotGame(User user) {
         this.user = user;
+        this.gameBoard = new int[3][3];
+    }
+
+    public void initializeBoard() {
+        this.gameBoard = new int[3][3];
     }
 }

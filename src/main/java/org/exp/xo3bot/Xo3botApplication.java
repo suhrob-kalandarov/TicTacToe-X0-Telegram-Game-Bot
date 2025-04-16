@@ -20,9 +20,6 @@ public class Xo3botApplication {
         SpringApplication.run(Xo3botApplication.class, args);
     }
 
-    @Value("${telegram.bot.token}")
-    private String botToken;
-
     @Configuration
     public class BotConfig {
         @Value("${telegram.bot.token}")

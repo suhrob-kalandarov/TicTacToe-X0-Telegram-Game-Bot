@@ -1,11 +1,12 @@
 package org.exp.xo3bot.repos;
 
-import org.exp.xo3bot.entities.User;
+
+import org.exp.xo3bot.entities.Result;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
 
-    boolean existsByUsername(String username);
+@Repository
+public interface ResultRepository extends JpaRepository<Result, Long> {
+
 }
