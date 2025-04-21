@@ -1,10 +1,15 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.base;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import org.exp.xo3bot.entities.User;
 import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.services.msg.ResourceMessageManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.exp.xo3bot.utils.Constants.*;
 
@@ -20,8 +25,8 @@ public class BotButtons {
                 .addRow(new InlineKeyboardButton(rm.getString(PLAY_WITH_BOT_BTN))
                                 .callbackData(PLAY_WITH_BOT_BTN),
                         new InlineKeyboardButton(rm.getString(PLAY_WITH_FRIEND_BTN))
-                                .callbackData(PLAY_WITH_FRIEND_BTN)
-                                //.switchInlineQuery(" ")
+                                //.callbackData(PLAY_WITH_FRIEND_BTN)
+                                .switchInlineQuery(" ")
                 )
                 .addRow(new InlineKeyboardButton(rm.getString(DIFFICULTY_LEVEL_BTN))
                         .callbackData(DIFFICULTY_LEVEL_BTN)
@@ -41,7 +46,7 @@ public class BotButtons {
                                 .callbackData(PLAY_WITH_BOT_BTN),
                         new InlineKeyboardButton(rm.getString(PLAY_WITH_FRIEND_BTN))
                                 //.callbackData(PLAY_WITH_FRIEND_BTN)
-                                .switchInlineQuery(" ")
+                                //.switchInlineQuery(" ")
 
                 )
                 .addRow(new InlineKeyboardButton(rm.getString(DIFFICULTY_LEVEL_BTN))
@@ -122,7 +127,7 @@ public class BotButtons {
                 );
     }
 
-    public InlineKeyboardMarkup getBoardBtns(int[][] board, int gameId) {
+    public InlineKeyboardMarkup getBoardBtns(long gameId, int[][] board) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         for (int i = 0; i < board.length; i++) {
             InlineKeyboardButton[] row = new InlineKeyboardButton[board[i].length];
@@ -139,4 +144,47 @@ public class BotButtons {
         }
         return markup;
     }
+
+    public InlineKeyboardMarkup endGameBtns() {
+        return null;
+    }
+
+
+    public InlineKeyboardMarkup playAsXorO(Long gameId, Long playerId) {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Play as ❌").callbackData("SELECT_X_" + gameId + "_" + playerId),
+                new InlineKeyboardButton("Play as ⭕").callbackData("SELECT_O_" + gameId + "_" + playerId)
+        );
+    }
+
+    public InlineKeyboardMarkup onlyShowSelected(Long gameId, User x, User o) {
+        List<InlineKeyboardButton[]> rows = new ArrayList<>();
+
+        if (x != null) {
+            rows.add(new InlineKeyboardButton[]{new InlineKeyboardButton("❌: " + x.getFullname()).callbackData("noop")});
+        }
+        if (o != null) {
+            rows.add(new InlineKeyboardButton[]{new InlineKeyboardButton("⭕: " + o.getFullname()).callbackData("noop")});
+        }
+
+        return new InlineKeyboardMarkup(rows.toArray(new InlineKeyboardButton[0][]));
+    }
+
+
+    public InlineKeyboardMarkup gameBoard(Long gameId, int[][] board) {
+        List<InlineKeyboardButton[]> rows = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            InlineKeyboardButton[] row = new InlineKeyboardButton[3];
+            for (int j = 0; j < 3; j++) {
+                String symbol = board[i][j] == 1 ? "❌" : board[i][j] == 2 ? "⭕" : "⬜";
+                row[j] = new InlineKeyboardButton(symbol).callbackData("MOVE_" + gameId + "_" + i + "_" + j);
+            }
+            rows.add(row);
+        }
+
+        return new InlineKeyboardMarkup(rows.toArray(new InlineKeyboardButton[0][]));
+    }
+
+
 }

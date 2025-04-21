@@ -1,4 +1,4 @@
-package org.exp.xo3bot.processes.callbackquery;
+package org.exp.xo3bot.processes.callbackquery.botgame;
 
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.response.SendResponse;

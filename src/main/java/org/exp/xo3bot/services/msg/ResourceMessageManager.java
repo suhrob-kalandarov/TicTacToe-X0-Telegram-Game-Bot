@@ -1,4 +1,4 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.msg;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ public class ResourceMessageManager {
 
     private ResourceBundle bundle;
 
-    // Bundleni o'rnatish va lokalni sozlash
     @PostConstruct
     public void init() {
         this.bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
@@ -21,12 +20,10 @@ public class ResourceMessageManager {
         this.bundle = ResourceBundle.getBundle(baseName, locale);
     }
 
-    // Locale o'zgartirish uchun metod
     public void setLocale(Locale locale) {
         this.bundle = ResourceBundle.getBundle("messages", locale);
     }
 
-    // Resurslardan stringni olish
     public String getString(String key) {
         if (bundle == null) {
             throw new IllegalStateException("Resource bundle is not initialized.");

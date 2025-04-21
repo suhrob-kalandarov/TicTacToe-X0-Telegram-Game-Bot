@@ -2,9 +2,8 @@ package org.exp.xo3bot.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Level;
+import org.exp.xo3bot.entities.stats.UserLevel;
 
-//@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,7 +16,9 @@ public class Achievement extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "user_level")
     @Enumerated(EnumType.STRING)
-    private Level level;
+    private UserLevel userLevel;
 
+    private Integer experience = 100;
 }

@@ -2,10 +2,12 @@ package org.exp.xo3bot.utils;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 
 import org.exp.xo3bot.Xo3botApplication;
+import org.exp.xo3bot.handlers.ChosenInlineResultHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ public class BotRunner implements CommandLineRunner {
     private final MessageHandler messageHandler;
     private final CallbackHandler callbackHandler;
     private final InlineHandler inlineHandler;
+    private final ChosenInlineResultHandler chosenInlineResultHandler;
 
     @Override
     public void run(String... args) {
@@ -39,6 +42,9 @@ public class BotRunner implements CommandLineRunner {
 
                     } else if (update.inlineQuery() != null) {
                         inlineHandler.handle(update.inlineQuery());
+
+                    } else if (update.chosenInlineResult() != null) {
+                        chosenInlineResultHandler.handle(update.chosenInlineResult());
 
                     } else log("Unknown message - " + update);
                 });

@@ -1,6 +1,5 @@
-package org.exp.xo3bot.processes;
+package org.exp.xo3bot.processes.callbackquery.botgame;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -9,9 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entities.User;
-import org.exp.xo3bot.repos.UserRepository;
-import org.exp.xo3bot.services.BotButtons;
-import org.exp.xo3bot.services.ResourceMessageManager;
+import org.exp.xo3bot.processes.CabinetCmd;
 
 import static org.exp.xo3bot.utils.Constants.*;
 

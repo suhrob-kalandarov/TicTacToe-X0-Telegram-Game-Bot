@@ -1,4 +1,4 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.msg;
 
 import com.pengrad.telegrambot.request.EditMessageText;
 import org.exp.xo3bot.dtos.MainDto;

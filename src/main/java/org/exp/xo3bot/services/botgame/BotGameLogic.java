@@ -1,4 +1,7 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.botgame;
+
+import org.exp.xo3bot.dtos.MainDto;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
@@ -6,15 +9,25 @@ import java.util.ArrayList;
 
 import static org.exp.xo3bot.utils.Constants.*;
 
-public class GameLogic {
+//@RequiredArgsConstructor
+@Service
+public class BotGameLogic {
+
+    private final MainDto dto;
+
+    public BotGameLogic(MainDto dto) {
+        this.dto = dto;
+    }
+
     private static final int EMPTY = 0;
     private static final int HUMAN = 1;
     private static final int BOT = 2;
     private final Random random = new Random();
 
+
     // A method that takes logic based on level
     public int[] findBestMove(int[][] board, String difficulty) {
-        if (isBoardFull(board)) return new int[]{-1, -1};
+        if (dto.getGameBoardService().isBoardFull(board)) return new int[]{-1, -1};
         return switch (LEVEL + difficulty) {
             case LEVEL_EASY -> findVeryEasyMove(board);
             case LEVEL_AVERAGE -> findAverageMove(board);
@@ -114,9 +127,9 @@ public class GameLogic {
 
     // MiniMax algorithm
     private int minimax(int[][] board, int depth, boolean isMaximizing) {
-        if (checkWin(board, BOT)) return 1;
-        if (checkWin(board, HUMAN)) return -1;
-        if (isBoardFull(board)) return 0;
+        if (dto.getGameBoardService().checkWin(board, BOT)) return 1;
+        if (dto.getGameBoardService().checkWin(board, HUMAN)) return -1;
+        if (dto.getGameBoardService().isBoardFull(board)) return 0;
 
         if (isMaximizing) {
             int maxScore = Integer.MIN_VALUE;
@@ -153,7 +166,7 @@ public class GameLogic {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] == EMPTY) {
                     board[i][j] = player;
-                    boolean win = checkWin(board, player);
+                    boolean win = dto.getGameBoardService().checkWin(board, player);
                     board[i][j] = EMPTY;
                     if (win) return new int[]{i, j};
                 }
@@ -217,27 +230,5 @@ public class GameLogic {
             }
         }
         return new int[]{-1, -1};
-    }
-
-    private boolean checkWin(int[][] board, int player) {
-
-        // Check rows and columns
-        for (int i = 0; i < 3; i++) {
-            if (board[i][0] == player && board[i][1] == player && board[i][2] == player) return true;
-            if (board[0][i] == player && board[1][i] == player && board[2][i] == player) return true;
-        }
-
-        // Check diagonals
-        return (board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
-                (board[0][2] == player && board[1][1] == player && board[2][0] == player);
-    }
-
-    private boolean isBoardFull(int[][] board) {
-        for (int[] row : board) {
-            for (int cell : row) {
-                if (cell == EMPTY) return false;
-            }
-        }
-        return true;
     }
 }

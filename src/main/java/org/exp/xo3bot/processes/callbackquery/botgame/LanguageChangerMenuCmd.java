@@ -1,6 +1,5 @@
-package org.exp.xo3bot.processes.callbackquery;
+package org.exp.xo3bot.processes.callbackquery.botgame;
 
-import com.pengrad.telegrambot.request.EditMessageText;
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entities.User;

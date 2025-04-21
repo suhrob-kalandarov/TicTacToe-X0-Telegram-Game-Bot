@@ -3,18 +3,17 @@ package org.exp.xo3bot.handlers;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entities.User;
-import org.exp.xo3bot.processes.LanguageMenuCmd;
-import org.exp.xo3bot.processes.callbackquery.DifficultyChangerMenuCmd;
-import org.exp.xo3bot.processes.callbackquery.DifficultyMenuCmd;
-import org.exp.xo3bot.processes.callbackquery.LanguageChangerMenuCmd;
-import org.exp.xo3bot.services.UserService;
+import org.exp.xo3bot.processes.callbackquery.botgame.LanguageMenuCmd;
+import org.exp.xo3bot.processes.callbackquery.multigame.MultiGameCmd;
+import org.exp.xo3bot.processes.callbackquery.botgame.DifficultyChangerMenuCmd;
+import org.exp.xo3bot.processes.callbackquery.botgame.DifficultyMenuCmd;
+import org.exp.xo3bot.processes.callbackquery.botgame.LanguageChangerMenuCmd;
+import org.exp.xo3bot.services.user.UserService;
 import org.exp.xo3bot.usekeys.Handler;
 import org.exp.xo3bot.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Objects;
-
 import static org.exp.xo3bot.utils.Constants.*;
 
 @Component
@@ -32,6 +31,9 @@ public class CallbackHandler implements Handler<CallbackQuery> {
         if (data.equals(" ")) {
 
 
+        } else if (data.startsWith("SELECT_X_") || data.startsWith("SELECT_O_") || data.startsWith("MOVE_")) {
+            process = new MultiGameCmd(dto, user, callbackQuery);
+
         } else if (data.startsWith(LANG)) {
             process = new LanguageChangerMenuCmd(user, data, dto);
 
@@ -44,7 +46,6 @@ public class CallbackHandler implements Handler<CallbackQuery> {
         } else if (data.startsWith(Constants.LEVEL)) {
             process = new DifficultyChangerMenuCmd(user, data, dto);
         }
-
         Objects.requireNonNull(process).run();
     }
 }

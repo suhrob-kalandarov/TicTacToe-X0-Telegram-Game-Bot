@@ -1,6 +1,7 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.user;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
 
@@ -73,6 +74,35 @@ public class UserService {
         return null;
     }
 
+
+    public User getOrCreateTelegramUser(ChosenInlineResult chosenInlineResult){
+        Long id = chosenInlineResult.from().id();
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+
+        User user = User.builder()
+                .id(id)
+                .fullname(buildFullNameFromUpdate(chosenInlineResult))
+                .username(chosenInlineResult.from().username())
+                .languageCode(chosenInlineResult.from().languageCode())
+                .language(Language.EN)
+                .blocked(true)
+                .build();
+
+        //BotGame game = createGameRow(user);
+        //MultiGame multiGame = createMultiGameRow(user);
+        //Achievement achievement = createAchievementRow(user);
+        //List<Result> results = createUserResultRows(user);
+
+        //user.setGame(game);
+        //user.setResults(results);
+
+        return userRepository.save(user);
+    }
+
     private List<Result> createUserResultRows(User user) {
         List<Result> results = new ArrayList<>();
 
@@ -90,6 +120,9 @@ public class UserService {
 
         return results;
     }
+
+
+
 
     private BotGame createGameRow(User user) {
         return new BotGame(user); // constructor ichida board init bo‘lsa yaxshi
@@ -110,6 +143,20 @@ public class UserService {
     public String buildFullNameFromUpdate(Message message) {
         String firstName = message.chat().firstName();
         String lastName = message.chat().lastName();
+
+        if (firstName == null && lastName == null) {
+            return generateDefaultUsername();
+        }
+
+        if (firstName == null) return lastName;
+        if (lastName == null) return firstName;
+
+        return firstName + " " + lastName;
+    }
+
+    public String buildFullNameFromUpdate(ChosenInlineResult chosenInlineResult) {
+        String firstName = chosenInlineResult.from().firstName();
+        String lastName = chosenInlineResult.from().lastName();
 
         if (firstName == null && lastName == null) {
             return generateDefaultUsername();

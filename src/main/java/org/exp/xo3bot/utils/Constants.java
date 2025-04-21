@@ -80,4 +80,5 @@ public interface Constants {
     String SEND_MSG_WITH_PIC = "Send msg with a picture";
     String SEND_MSG_WITH_VID = "Send msg with a video";
 
+    int EMPTY = 0;
 }

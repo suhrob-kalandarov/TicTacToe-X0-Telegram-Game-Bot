@@ -1,4 +1,4 @@
-package org.exp.xo3bot.services;
+package org.exp.xo3bot.services.base;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

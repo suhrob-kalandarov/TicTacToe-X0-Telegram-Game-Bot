@@ -2,12 +2,9 @@ package org.exp.xo3bot.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Difficulty;
 import org.exp.xo3bot.entities.stats.GameStatus;
-import org.exp.xo3bot.services.GameBoardConverter;
+import org.exp.xo3bot.services.base.GameBoardConverter;
 
-
-//@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,25 +19,25 @@ public class MultiGame extends BaseEntity{
     @Column(name = "creator_id")
     private Long creatorId;
 
+    @Column(name = "current_turn_id")
+    private Long currentTurnId;
+
     @Column(name = "inline_message_id")
-    private Integer inlineMessageId;
+    private String inlineMessageId;
 
-    @Column(name = "player_x")
-    private Long playerX;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_x")
+    private User playerX;
 
-    @Column(name = "player_o")
-    private Long playerO;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_o")
+    private User playerO;
 
     @Convert(converter = GameBoardConverter.class)
     @Column(name = "game_board", length = 50)
     private int[][] gameBoard;
 
-    @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
-
-    public void initializeBoard() {
+    public void initGameBoard() {
         this.gameBoard = new int[3][3];
     }
-
-
 }
