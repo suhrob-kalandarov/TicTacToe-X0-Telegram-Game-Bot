@@ -1,9 +1,11 @@
-package org.exp.xo3bot.entities;
+package org.exp.xo3bot.entity.botgame;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Difficulty;
-import org.exp.xo3bot.entities.stats.GameStatus;
+import org.exp.xo3bot.entity.BaseEntity;
+import org.exp.xo3bot.entity.User;
+import org.exp.xo3bot.entity.stats.Difficulty;
+import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.services.base.GameBoardConverter;
 
 @Data

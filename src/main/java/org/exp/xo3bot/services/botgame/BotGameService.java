@@ -1,26 +1,28 @@
-package org.exp.xo3bot.processes;
+/*
+package org.exp.xo3bot.services.botgame;
 
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
+import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entities.User;
-import org.exp.xo3bot.services.GameLogic;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
 
-import static org.exp.xo3bot.services.DB.getUserGameStat;
-import static org.exp.xo3bot.services.DB.updateGameScore;
 import static org.exp.xo3bot.utils.Constants.*;
+import static org.exp.xo3bot.utils.Constants.DRAW_MSG;
 
 @RequiredArgsConstructor
-public class BotGameCmd {
-    private final User user;
+@Service
+public class BotGameService {
+
+    private final MainDto dto;
+
+    private User user;
 
     public void handleMove(int row, int col) {
         try {
             // Restart the board if it's full
             if (isBoardFull(user.getGame().getGameBoard())) {
-                user.getGame().initializeBoard();
+                user.getGame().initGameBoard();
                 //DB.updateGameBoard(user.getUserId(), user.getGameBoard()); // ✅ Game board reset
             }
 
@@ -104,10 +106,12 @@ public class BotGameCmd {
     }
 
     private String formatGameStartMessage() {
-        /*return getString(GAME_MENU_MSG).formatted(
+        */
+/*return getString(GAME_MENU_MSG).formatted(
                 //DB.getUserSign(user.getUserId()),
                 //DB.getBotSign(user.getUserId())
-        );*/
+        );*//*
+
         return null;
     }
 
@@ -153,22 +157,26 @@ public class BotGameCmd {
 
     // Send result message
     private void sendResult(String resultMessage) {
-        /*Main.telegramBot.execute(
+        */
+/*Main.telegramBot.execute(
                 getResultMessageText(
                         resultMessage,
                         formatBoard(user.getGame().getGameBoard())
                 )
-        );*/
+        );*//*
+
 
         // Send main menu
-        /*user.getGame().setMessageId(
+        */
+/*user.getGame().setMessageId(
                 telegramBot.execute(
                         new SendMessage(user.getId(), getString(USER_STATISTICS_MSG)
                                 .formatted(DB.getUserScores(user.getId()))
                         ).parseMode(ParseMode.valueOf("HTML")
                         ).replyMarkup(BotButtons.genAfterGameCabinetButtons())
                 ).message().messageId()
-        );*/
+        );*//*
+
 
 
 
@@ -176,11 +184,12 @@ public class BotGameCmd {
         //updateUserState(user.getUserId(), user.getUserState().toString());
 
         // Initialize game board
-        user.getGame().initializeBoard();
+        user.getGame().initGameBoard();
         //DB.updateGameBoard(user.getUserId(), user.getGameBoard());
     }
 
-    /*@NotNull
+    */
+/*@NotNull
     private EditMessageText getResultMessageText(String resultMessage, String boardState) {
         return new EditMessageText(
                 user.getId(), user.getGame().getMessageId(),
@@ -193,7 +202,8 @@ public class BotGameCmd {
                 ParseMode.valueOf("HTML")
         );
     }
-    */
+    *//*
+
 
 
     //Get game board results
@@ -202,7 +212,8 @@ public class BotGameCmd {
         String padding = "  ";
 
         sb.append("<pre>");
-        /*for (int[] row : board) {
+        */
+/*for (int[] row : board) {
             sb.append(padding);
             for (int cell : row) {
                 String symbol;
@@ -217,8 +228,10 @@ public class BotGameCmd {
                 sb.append(padding);
             }
             sb.append("\n");
-        }*/
+        }*//*
+
         sb.append("</pre>");
         return sb.toString();
     }
 }
+*/

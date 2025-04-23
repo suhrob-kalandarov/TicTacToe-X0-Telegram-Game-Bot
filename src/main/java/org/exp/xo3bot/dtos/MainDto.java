@@ -3,10 +3,7 @@ package org.exp.xo3bot.dtos;
 import com.pengrad.telegrambot.TelegramBot;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.exp.xo3bot.repos.GameRepository;
-import org.exp.xo3bot.repos.MultiGameRepository;
-import org.exp.xo3bot.repos.ResultRepository;
-import org.exp.xo3bot.repos.UserRepository;
+import org.exp.xo3bot.repos.*;
 import org.exp.xo3bot.services.base.BotButtons;
 import org.exp.xo3bot.services.base.GameBoardService;
 //import org.exp.xo3bot.services.botgame.BotGameService;
@@ -49,6 +46,9 @@ public class MainDto {
 
     @Autowired
     private final MultiGameService multiGameService;
+
+    @Autowired
+    private final MultiGameUserRepository multiGameUserRepository;
 
     @Autowired
     private final MultiGameLogic multiGameLogic;

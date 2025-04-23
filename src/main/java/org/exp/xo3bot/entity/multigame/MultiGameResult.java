@@ -1,26 +1,27 @@
-package org.exp.xo3bot.entities;
+/*
+package org.exp.xo3bot.entity.multigame;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.entity.BaseEntity;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "results")
-public class Result extends BaseEntity {
+public class MultiGameResult extends BaseEntity {
 
+   */
+/*
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "multi_game_user_id")
     private User user;
+   *//*
 
-    @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
 
     @Column(name = "win_count")
     private int winCount;
@@ -31,3 +32,4 @@ public class Result extends BaseEntity {
     @Column(name = "draw_count")
     private int drawCount;
 }
+*/

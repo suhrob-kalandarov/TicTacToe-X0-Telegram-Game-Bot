@@ -2,7 +2,7 @@ package org.exp.xo3bot.handlers;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entities.User;
+import org.exp.xo3bot.entity.User;
 import org.exp.xo3bot.processes.callbackquery.botgame.LanguageMenuCmd;
 import org.exp.xo3bot.processes.callbackquery.multigame.MultiGameCmd;
 import org.exp.xo3bot.processes.callbackquery.botgame.DifficultyChangerMenuCmd;
@@ -32,7 +32,7 @@ public class CallbackHandler implements Handler<CallbackQuery> {
 
 
         } else if (data.startsWith("SELECT_X_") || data.startsWith("SELECT_O_") || data.startsWith("MOVE_")) {
-            process = new MultiGameCmd(dto, user, callbackQuery);
+            process = new MultiGameCmd(dto, callbackQuery);
 
         } else if (data.startsWith(LANG)) {
             process = new LanguageChangerMenuCmd(user, data, dto);

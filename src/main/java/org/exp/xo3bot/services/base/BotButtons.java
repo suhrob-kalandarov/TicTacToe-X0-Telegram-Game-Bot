@@ -2,8 +2,8 @@ package org.exp.xo3bot.services.base;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import org.exp.xo3bot.entities.User;
-import org.exp.xo3bot.entities.stats.Difficulty;
+import org.exp.xo3bot.entity.User;
+import org.exp.xo3bot.entity.stats.Difficulty;
 import org.exp.xo3bot.services.msg.ResourceMessageManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -145,30 +145,13 @@ public class BotButtons {
         return markup;
     }
 
-    public InlineKeyboardMarkup endGameBtns() {
-        return null;
-    }
-
-
-    public InlineKeyboardMarkup playAsXorO(Long gameId, Long playerId) {
+    public InlineKeyboardMarkup endMultiGameBtns() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Play as ❌").callbackData("SELECT_X_" + gameId + "_" + playerId),
-                new InlineKeyboardButton("Play as ⭕").callbackData("SELECT_O_" + gameId + "_" + playerId)
+                new InlineKeyboardButton("🔄").switchInlineQueryCurrentChat(" "),
+                new InlineKeyboardButton("🤖").url("https://t.me/" + "xoDemoBot")
         );
     }
 
-    public InlineKeyboardMarkup onlyShowSelected(Long gameId, User x, User o) {
-        List<InlineKeyboardButton[]> rows = new ArrayList<>();
-
-        if (x != null) {
-            rows.add(new InlineKeyboardButton[]{new InlineKeyboardButton("❌: " + x.getFullname()).callbackData("noop")});
-        }
-        if (o != null) {
-            rows.add(new InlineKeyboardButton[]{new InlineKeyboardButton("⭕: " + o.getFullname()).callbackData("noop")});
-        }
-
-        return new InlineKeyboardMarkup(rows.toArray(new InlineKeyboardButton[0][]));
-    }
 
 
     public InlineKeyboardMarkup gameBoard(Long gameId, int[][] board) {

@@ -2,8 +2,8 @@ package org.exp.xo3bot.processes.callbackquery.botgame;
 
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entities.User;
-import org.exp.xo3bot.entities.stats.Language;
+import org.exp.xo3bot.entity.User;
+import org.exp.xo3bot.entity.stats.Language;
 import org.exp.xo3bot.processes.CabinetCmd;
 import java.util.Locale;
 

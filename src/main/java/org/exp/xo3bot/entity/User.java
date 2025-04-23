@@ -1,8 +1,10 @@
-package org.exp.xo3bot.entities;
+package org.exp.xo3bot.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.Language;
+import org.exp.xo3bot.entity.botgame.BotGame;
+import org.exp.xo3bot.entity.botgame.BotGameResult;
+import org.exp.xo3bot.entity.stats.Language;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -47,7 +49,7 @@ public class User {
     private BotGame game;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Result> results = new ArrayList<>();
+    private List<BotGameResult> results = new ArrayList<>();
 
     /*
     @PostPersist

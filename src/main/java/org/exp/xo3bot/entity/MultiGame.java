@@ -1,8 +1,9 @@
-package org.exp.xo3bot.entities;
+package org.exp.xo3bot.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.GameStatus;
+import org.exp.xo3bot.entity.multigame.MultiGameUser;
+import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.services.base.GameBoardConverter;
 
 @Data
@@ -27,11 +28,11 @@ public class MultiGame extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_x")
-    private User playerX;
+    private MultiGameUser playerX;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_o")
-    private User playerO;
+    private MultiGameUser playerO;
 
     @Convert(converter = GameBoardConverter.class)
     @Column(name = "game_board", length = 50)

@@ -2,12 +2,15 @@ package org.exp.xo3bot.services.user;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.ChosenInlineResult;
+import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
 
-import org.exp.xo3bot.entities.*;
-import org.exp.xo3bot.entities.stats.Difficulty;
-import org.exp.xo3bot.entities.stats.Language;
+import org.exp.xo3bot.entity.*;
+import org.exp.xo3bot.entity.botgame.BotGame;
+import org.exp.xo3bot.entity.botgame.BotGameResult;
+import org.exp.xo3bot.entity.stats.Difficulty;
+import org.exp.xo3bot.entity.stats.Language;
 import org.exp.xo3bot.repos.UserRepository;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +46,7 @@ public class UserService {
                 BotGame game = createGameRow(user);
                 //MultiGame multiGame = createMultiGameRow(user);
                 //Achievement achievement = createAchievementRow(user);
-                List<Result> results = createUserResultRows(user);
+                List<BotGameResult> results = createUserResultRows(user);
 
 
                 user.setGame(game);
@@ -103,11 +106,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    private List<Result> createUserResultRows(User user) {
-        List<Result> results = new ArrayList<>();
+    private List<BotGameResult> createUserResultRows(User user) {
+        List<BotGameResult> results = new ArrayList<>();
 
         for (Difficulty difficulty : Difficulty.values()) {
-            Result result = Result.builder()
+            BotGameResult result = BotGameResult.builder()
                     .user(user)
                     .difficulty(difficulty)
                     .winCount(0)
@@ -154,9 +157,38 @@ public class UserService {
         return firstName + " " + lastName;
     }
 
+
+    public String buildFullNameFromUpdate(CallbackQuery callbackQuery) {
+        String firstName = callbackQuery.from().firstName();
+        String lastName = callbackQuery.from().lastName();
+
+        if (firstName == null && lastName == null) {
+            return generateDefaultUsername();
+        }
+
+        if (firstName == null) return lastName;
+        if (lastName == null) return firstName;
+
+        return firstName + " " + lastName;
+    }
+
     public String buildFullNameFromUpdate(ChosenInlineResult chosenInlineResult) {
         String firstName = chosenInlineResult.from().firstName();
         String lastName = chosenInlineResult.from().lastName();
+
+        if (firstName == null && lastName == null) {
+            return generateDefaultUsername();
+        }
+
+        if (firstName == null) return lastName;
+        if (lastName == null) return firstName;
+
+        return firstName + " " + lastName;
+    }
+
+    public String buildFullNameFromUpdate(InlineQuery inlineQuery) {
+        String firstName = inlineQuery.from().firstName();
+        String lastName = inlineQuery.from().lastName();
 
         if (firstName == null && lastName == null) {
             return generateDefaultUsername();

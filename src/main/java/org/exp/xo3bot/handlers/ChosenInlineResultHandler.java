@@ -1,12 +1,12 @@
 package org.exp.xo3bot.handlers;
 
-
 import com.pengrad.telegrambot.model.ChosenInlineResult;
 import com.pengrad.telegrambot.model.User;
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entities.MultiGame;
-import org.exp.xo3bot.entities.stats.GameStatus;
+import org.exp.xo3bot.entity.MultiGame;
+import org.exp.xo3bot.entity.multigame.MultiGameUser;
+import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.usekeys.Handler;
 import org.springframework.stereotype.Component;
 
@@ -23,71 +23,61 @@ public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
 
     @Override
     public void handle(ChosenInlineResult chosenInlineResult) {
-        System.out.println(chosenInlineResult);
 
-        User tgUser = chosenInlineResult.from();
+        String inlinedMessageId = chosenInlineResult.inlineMessageId();
         String resultId = chosenInlineResult.resultId();
-        Long gameId = null;
+
+        Long userId = chosenInlineResult.from().id();
 
         Pattern pattern = Pattern.compile("selected_[xo]_(\\d+)");
         Matcher matcher = pattern.matcher(resultId);
 
-        if (matcher.matches()) {
-            gameId = Long.parseLong(matcher.group(1));
+        if (!matcher.matches()) return;
+
+        Long gameId = Long.parseLong(matcher.group(1));
+        Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(gameId);
+
+        if (optionalMultiGame.isEmpty()) return;
+
+        MultiGame multiGame = optionalMultiGame.get();
+        multiGame.setInlineMessageId(inlinedMessageId);
+
+        MultiGameUser multiGameUser = null;
+        Optional<MultiGameUser> optionalMultiGameUser = dto.getMultiGameUserRepository().findById(userId);
+
+        if (optionalMultiGameUser.isEmpty()) {
+            multiGameUser = MultiGameUser.builder()
+                    .id(userId)
+                    .fullname(dto.getUserService().buildFullNameFromUpdate(chosenInlineResult))
+                    .username(chosenInlineResult.from().username())
+                    .languageCode(chosenInlineResult.from().languageCode())
+                    .build();
+            dto.getMultiGameUserRepository().save(multiGameUser);
+
+        } else {
+            multiGameUser = optionalMultiGameUser.get();
         }
 
         if (resultId.startsWith("selected_x")) {
 
-            Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(Objects.requireNonNull(gameId));
-
-            if (optionalMultiGame.isPresent()) {
-
-                MultiGame multiGame = optionalMultiGame.get();
-
-                multiGame.setPlayerX(
-                        org.exp.xo3bot.entities.User.builder()
-                                .id(tgUser.id())
-                                .languageCode(tgUser.languageCode())
-                                .fullname(dto.getUserService().buildFullNameFromUpdate(chosenInlineResult))
-                                .build()
-                );
-                multiGame.setCurrentTurnId(tgUser.id());
-
-                System.out.println(dto.getMultiGameRepository().save(multiGame).getPlayerX());
-
-                if (multiGame.getStatus().equals(GameStatus.ACTIVE)) {
-
-
-
-                } else {
-
-                }
+            // Agar Player O allaqachon shu odam bo'lsa, ruxsat bermaslik
+            if (multiGame.getPlayerO() != null && userId.equals(multiGame.getPlayerO().getId())) {
+                System.out.println("User already joined as O");
+                return;
             }
+            multiGame.setPlayerX(multiGameUser);
+            multiGame.setCurrentTurnId(multiGame.getId());
 
         } else if (resultId.startsWith("selected_o")) {
 
-            Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(gameId);
-
-            if (optionalMultiGame.isPresent()) {
-
-                MultiGame multiGame = optionalMultiGame.get();
-
-                if (multiGame.getStatus().equals(GameStatus.ACTIVE)) {
-
-                    multiGame.setPlayerO(
-                            org.exp.xo3bot.entities.User.builder()
-                                    .id(tgUser.id())
-                                    .languageCode(tgUser.languageCode())
-                                    .fullname(dto.getUserService().buildFullNameFromUpdate(chosenInlineResult))
-                                    .build()
-                    );
-
-                    System.out.println(dto.getMultiGameRepository().save(multiGame).getPlayerO());
-
-                } else {
-
-                }
+            // Agar Player X allaqachon shu odam bo'lsa, ruxsat bermaslik
+            if (multiGame.getPlayerX() != null && userId.equals(multiGame.getPlayerX().getId())) {
+                System.out.println("User already joined as X");
+                return;
             }
+            multiGame.setPlayerO(multiGameUser);
         }
+
+        dto.getMultiGameRepository().save(multiGame);
     }
 }

@@ -1,8 +1,8 @@
-package org.exp.xo3bot.entities;
+package org.exp.xo3bot.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entities.stats.UserLevel;
+import org.exp.xo3bot.entity.stats.UserLevel;
 
 @Data
 @Builder

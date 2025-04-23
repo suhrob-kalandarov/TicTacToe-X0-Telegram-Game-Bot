@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.response.SendResponse;
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entities.User;
+import org.exp.xo3bot.entity.User;
 import org.exp.xo3bot.utils.Constants;
 
 @RequiredArgsConstructor

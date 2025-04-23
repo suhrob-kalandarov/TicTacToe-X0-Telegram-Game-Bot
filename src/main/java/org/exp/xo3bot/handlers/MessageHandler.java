@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entities.User;
+import org.exp.xo3bot.entity.User;
 import org.exp.xo3bot.processes.callbackquery.botgame.LanguageMenuCmd;
 import org.exp.xo3bot.repos.UserRepository;
 import org.exp.xo3bot.services.user.UserService;
