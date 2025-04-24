@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.entity.*;
 import org.exp.xo3bot.entity.botgame.BotGame;
 import org.exp.xo3bot.entity.botgame.BotGameResult;
+import org.exp.xo3bot.entity.multigame.MultiGame;
 import org.exp.xo3bot.entity.stats.Difficulty;
 import org.exp.xo3bot.entity.stats.Language;
 import org.exp.xo3bot.repos.UserRepository;

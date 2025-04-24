@@ -1,6 +1,6 @@
 package org.exp.xo3bot.repos;
 
-import org.exp.xo3bot.entity.MultiGame;
+import org.exp.xo3bot.entity.multigame.MultiGame;
 import org.exp.xo3bot.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

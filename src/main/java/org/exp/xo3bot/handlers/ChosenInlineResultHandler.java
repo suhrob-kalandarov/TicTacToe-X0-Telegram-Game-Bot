@@ -1,16 +1,15 @@
 package org.exp.xo3bot.handlers;
 
 import com.pengrad.telegrambot.model.ChosenInlineResult;
-import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
-import org.exp.xo3bot.entity.MultiGame;
+import org.exp.xo3bot.entity.multigame.MultiGame;
 import org.exp.xo3bot.entity.multigame.MultiGameUser;
-import org.exp.xo3bot.entity.stats.GameStatus;
+import org.exp.xo3bot.entity.multigame.Turn;
 import org.exp.xo3bot.usekeys.Handler;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,20 +61,31 @@ public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
 
             // Agar Player O allaqachon shu odam bo'lsa, ruxsat bermaslik
             if (multiGame.getPlayerO() != null && userId.equals(multiGame.getPlayerO().getId())) {
+
+                dto.getTelegramBot().execute(
+                        new AnswerCallbackQuery(inlinedMessageId).text("User already joined as O !")
+                );
+
                 System.out.println("User already joined as O");
                 return;
             }
             multiGame.setPlayerX(multiGameUser);
-            multiGame.setCurrentTurnId(multiGame.getId());
+            multiGame.setInTurn(Turn.PLAYER_X);
 
         } else if (resultId.startsWith("selected_o")) {
 
             // Agar Player X allaqachon shu odam bo'lsa, ruxsat bermaslik
             if (multiGame.getPlayerX() != null && userId.equals(multiGame.getPlayerX().getId())) {
+
+                dto.getTelegramBot().execute(
+                        new AnswerCallbackQuery(inlinedMessageId).text("User already joined as X !")
+                );
+
                 System.out.println("User already joined as X");
                 return;
             }
             multiGame.setPlayerO(multiGameUser);
+            multiGame.setInTurn(Turn.PLAYER_X);
         }
 
         dto.getMultiGameRepository().save(multiGame);

@@ -28,10 +28,11 @@ public class CallbackHandler implements Handler<CallbackQuery> {
         String data = callbackQuery.data();
         User user = new UserService(dto.getUserRepository()).getOrCreateTelegramUser(callbackQuery);
 
-        if (data.equals(" ")) {
+        /*if (data.equals(" ")) {
 
 
-        } else if (data.startsWith("SELECT_X_") || data.startsWith("SELECT_O_") || data.startsWith("MOVE_")) {
+
+        } else*/ if (data.startsWith("SELECT_X_") || data.startsWith("SELECT_O_") || data.startsWith("MOVE_")) {
             process = new MultiGameCmd(dto, callbackQuery);
 
         } else if (data.startsWith(LANG)) {

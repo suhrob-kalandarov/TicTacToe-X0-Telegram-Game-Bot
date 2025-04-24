@@ -1,8 +1,8 @@
-package org.exp.xo3bot.entity;
+package org.exp.xo3bot.entity.multigame;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.exp.xo3bot.entity.multigame.MultiGameUser;
+import org.exp.xo3bot.entity.BaseEntity;
 import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.services.base.GameBoardConverter;
 
@@ -12,7 +12,7 @@ import org.exp.xo3bot.services.base.GameBoardConverter;
 @AllArgsConstructor
 @Entity
 @Table(name = "multi_games")
-public class MultiGame extends BaseEntity{
+public class MultiGame extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private GameStatus status;
@@ -20,8 +20,9 @@ public class MultiGame extends BaseEntity{
     @Column(name = "creator_id")
     private Long creatorId;
 
-    @Column(name = "current_turn_id")
-    private Long currentTurnId;
+    @Column(name = "in_turn")
+    @Enumerated(EnumType.STRING)
+    private Turn inTurn;
 
     @Column(name = "inline_message_id")
     private String inlineMessageId;

@@ -34,7 +34,7 @@ public class MultiGameUser {
     @Column(name = "language_code")
     private String languageCode;
 
-    /*
+    /* in future
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MultiGameResult> results = new ArrayList<>();
     */

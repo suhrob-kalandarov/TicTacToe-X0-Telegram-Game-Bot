@@ -7,7 +7,8 @@ import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import lombok.RequiredArgsConstructor;
-import org.exp.xo3bot.entity.MultiGame;
+import org.exp.xo3bot.entity.multigame.MultiGame;
+import org.exp.xo3bot.entity.multigame.Turn;
 import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.repos.MultiGameRepository;
 import org.exp.xo3bot.services.base.BotButtons;
@@ -37,35 +38,90 @@ public class MultiGameLogic {
 
         Optional<MultiGame> optionalGame = multiGameRepository.findById(gameId);
 
-        if (optionalGame.isEmpty()) return;
+        if (optionalGame.isEmpty()) {
+            telegramBot.execute(
+                    new AnswerCallbackQuery(callbackQuery.id()).text("Game not found!").showAlert(true)
+            );
+            return;
+        }
 
         MultiGame game = optionalGame.get();
-
         String inlineMessageId = game.getInlineMessageId();
 
         if (inlineMessageId == null) {
-            System.err.println("❌ inlineMessageId is NULL for gameId = " + gameId);
+            telegramBot.execute(
+                    new AnswerCallbackQuery(callbackQuery.id()).text("❌ inlineMessageId is NULL for gameId = " + gameId).showAlert(true)
+            );
             return;
         }
 
         // Faqat faol o‘yin bo‘lsa
-        if (!game.getStatus().equals(GameStatus.ACTIVE)) {
-            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Game is not active!").showAlert(true));
-            return;
-        }
+        /*if (game.getStatus() != GameStatus.ACTIVE || game.getStatus() != GameStatus.CREATED) {
+            telegramBot.execute(
+                    new AnswerCallbackQuery(callbackQuery.id()).text("Game is not active!").showAlert(true)
+            );
 
-        // Faqat navbatdagi o‘yinchi yurishi mumkin
-        if (game.getPlayerO() != null){
-            if (!game.getCurrentTurnId().equals(userId)) {
-                telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Not your turn!").showAlert(true));
-                return;
-            }
-        }
+            telegramBot.execute(
+                    new EditMessageText(
+                            inlineMessageId, GameStatus.DEAD_LOCK.name()
+                    ).replyMarkup(buttons.endMultiGameBtns())
+            );
+
+            game.setStatus(GameStatus.DEAD_LOCK);
+            multiGameRepository.save(game);
+            return;
+        }*/
+
 
         int[][] board = game.getGameBoard();
 
+        /*if (game.getPlayerX() != null && game.getPlayerO() != null){
+
+            if (game.getPlayerO().getId() != userId || game.getPlayerX().getId() != userId) {
+                telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("It's not your game!").showAlert(true));
+                return;
+            }
+
+            // Faqat navbatdagi o‘yinchi yurishi mumkin
+            if (game.getInTurn() != Turn.PLAYER_O) { // && !game.getCurrentTurnId().equals(userId)
+                telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Not your turn!").showAlert(true));
+                return;
+            }
+
+        } else {
+
+        }*/
+
+
+        // 1. O'yinchi tekshiruvi (gamega tegishliligi)
+        if (game.getPlayerX() == null || game.getPlayerO() == null) {
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
+                    .text("Game is not ready yet! Waiting for second player...")
+                    .showAlert(true));
+            return;
+        }
+
+        // 2. O'yinchi bu o'yinda o'ynayotganligini tekshirish
+        if (!userId.equals(game.getPlayerX().getId()) && !userId.equals(game.getPlayerO().getId())) {
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
+                    .text("It's not your game!")
+                    .showAlert(true));
+            return;
+        }
+
+        // 3. Navbat tekshiruvi
+        if ((game.getInTurn() == Turn.PLAYER_X && !userId.equals(game.getPlayerX().getId())) ||
+                game.getPlayerO() != null && (game.getInTurn() == Turn.PLAYER_O && !userId.equals(game.getPlayerO().getId())))
+        {
+
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id())
+                    .text("Not your turn! Wait for your opponent.")
+                    .showAlert(true));
+            return;
+        }
+
         if (board[row][col] != 0) {
-            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move!").showAlert(true));
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move!"));
             return;
         }
 
@@ -101,13 +157,10 @@ public class MultiGameLogic {
 
             if (game.getPlayerO() != null) {
 
-                Long nextTurnId = game.getPlayerX().getId().equals(userId)
-                        ? game.getPlayerO().getId()
-                        : game.getPlayerX().getId();
-                game.setCurrentTurnId(nextTurnId);
+               switchTurn(game);
 
             } else {
-                game.setCurrentTurnId(null);
+                game.setInTurn(Turn.PLAYER_O);
             }
 
             InlineKeyboardMarkup markup = buttons.getBoardBtns(gameId, board);
@@ -118,5 +171,17 @@ public class MultiGameLogic {
         }
 
         multiGameRepository.save(game);
+    }
+
+    public void switchTurn(MultiGame game) {
+        if (game.getPlayerO() != null) {
+            // Agar ikkala o'yinchi ham mavjud bo'lsa
+            game.setInTurn(game.getInTurn() == Turn.PLAYER_X
+                    ? Turn.PLAYER_O
+                    : Turn.PLAYER_X);
+        } else {
+            // Agar faqat bitta o'yinchi bo'lsa (masalan, hali ikkinchi o'yinchi qo'shilmagan)
+            game.setInTurn(Turn.PLAYER_X); // yoki PLAYER_O - qaysi biri boshlashiga qarab
+        }
     }
 }
