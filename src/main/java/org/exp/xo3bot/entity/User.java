@@ -22,10 +22,9 @@ public class User {
     @Id
     private Long id;
 
-    //@Column(nullable = false)
+    @Column(nullable = false)
     private String fullname;
 
-    //@Column(nullable = false)
     private String username;
 
     @Enumerated(EnumType.STRING)
@@ -34,7 +33,7 @@ public class User {
     @Column(name = "language_code")
     private String languageCode;
 
-    //@Column(nullable = false)
+    @Column(nullable = false)
     private boolean blocked = false;
 
     @Column(name = "updated_at")

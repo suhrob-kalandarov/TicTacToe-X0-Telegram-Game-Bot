@@ -39,14 +39,14 @@ public class MultiGameCmd implements Runnable {
         MultiGame multiGame = optionalMultiGame.get();
 
         if (multiGame.getPlayerX() == null || multiGame.getPlayerO() == null) {
-            dto.getMultiGameService().gamePlayersInfoFiller(multiGame, userId, callbackQuery);
+            multiGame = dto.getMultiGameService().gamePlayersInfoFiller(multiGame, userId, callbackQuery);
         }
 
        /* if (multiGame.getPlayerX() != null || multiGame.getPlayerO() != null) {
             multiGame.setStatus(GameStatus.ACTIVE);
         }*/
 
-        dto.getMultiGameRepository().save(multiGame);
+        //dto.getMultiGameRepository().save(multiGame);
 
         if (data.startsWith("MOVE_")) {
             dto.getMultiGameLogic().handleMove(gameId,data, userId, callbackQuery);

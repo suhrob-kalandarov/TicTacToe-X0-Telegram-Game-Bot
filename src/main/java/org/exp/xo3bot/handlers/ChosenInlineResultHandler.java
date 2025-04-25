@@ -7,6 +7,7 @@ import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entity.multigame.MultiGame;
 import org.exp.xo3bot.entity.multigame.MultiGameUser;
 import org.exp.xo3bot.entity.multigame.Turn;
+import org.exp.xo3bot.services.multigame.MultiGameUserService;
 import org.exp.xo3bot.usekeys.Handler;
 import org.springframework.stereotype.Component;
 
@@ -19,62 +20,83 @@ import java.util.regex.Pattern;
 public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
 
     private final MainDto dto;
+    private final MultiGameUserService multiGameUserService;
 
     @Override
     public void handle(ChosenInlineResult chosenInlineResult) {
 
+        System.out.println("ChosenInlineResultHandler.handle" + chosenInlineResult.toString());
+
         String inlinedMessageId = chosenInlineResult.inlineMessageId();
         String resultId = chosenInlineResult.resultId();
-
         Long userId = chosenInlineResult.from().id();
 
         Pattern pattern = Pattern.compile("selected_[xo]_(\\d+)");
+        System.out.println("pattern = " + pattern);
+
         Matcher matcher = pattern.matcher(resultId);
+        System.out.println("matcher = " + matcher);
 
-        if (!matcher.matches()) return;
-
-        Long gameId = Long.parseLong(matcher.group(1));
-        Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(gameId);
-
-        if (optionalMultiGame.isEmpty()) return;
-
-        MultiGame multiGame = optionalMultiGame.get();
-        multiGame.setInlineMessageId(inlinedMessageId);
-
-        MultiGameUser multiGameUser = null;
-        Optional<MultiGameUser> optionalMultiGameUser = dto.getMultiGameUserRepository().findById(userId);
-
-        if (optionalMultiGameUser.isEmpty()) {
-            multiGameUser = MultiGameUser.builder()
-                    .id(userId)
-                    .fullname(dto.getUserService().buildFullNameFromUpdate(chosenInlineResult))
-                    .username(chosenInlineResult.from().username())
-                    .languageCode(chosenInlineResult.from().languageCode())
-                    .build();
-            dto.getMultiGameUserRepository().save(multiGameUser);
-
-        } else {
-            multiGameUser = optionalMultiGameUser.get();
+        if (!matcher.matches()) {
+            System.out.println("Not matches :!: " + matcher);
+            return;
         }
 
-        if (resultId.startsWith("selected_x")) {
+        Long gameId = Long.parseLong(matcher.group(1));
+        System.out.println("gameId = " + gameId);
 
-            // Agar Player O allaqachon shu odam bo'lsa, ruxsat bermaslik
+        Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(gameId);
+        System.out.println("optionalMultiGame = " + optionalMultiGame);
+
+        if (optionalMultiGame.isEmpty()) {
+            System.out.println("Not found optionalMultiGame = " + optionalMultiGame);
+            return;
+        }
+
+        MultiGame multiGame = optionalMultiGame.get();
+        System.out.println("multiGame = " + multiGame);
+
+        multiGame.setInlineMessageId(inlinedMessageId);
+        System.out.println("inlinedMessageId = " + inlinedMessageId);
+        System.out.println("multiGame.getInlineMessageId() = " + multiGame.getInlineMessageId());
+
+        MultiGameUser multiGameUser = multiGameUserService.getOrCreatePlayer(chosenInlineResult);
+
+        if (resultId.startsWith("selected_x")) {
+            System.out.println("resultId = " + resultId);
+
+            /// Agar Player O allaqachon shu odam bo'lsa, ruxsat bermaslik
             if (multiGame.getPlayerO() != null && userId.equals(multiGame.getPlayerO().getId())) {
 
                 dto.getTelegramBot().execute(
-                        new AnswerCallbackQuery(inlinedMessageId).text("User already joined as O !")
+                        new AnswerCallbackQuery(inlinedMessageId).text("User(" + userId + ") already joined as O !")
                 );
 
-                System.out.println("User already joined as O");
+                System.out.println("User(" + userId + ") already joined as O");
                 return;
             }
+
+
+            System.out.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
             multiGame.setPlayerX(multiGameUser);
+            System.out.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
+
+            System.out.println("multiGame.getInTurn() = " + multiGame.getInTurn());
             multiGame.setInTurn(Turn.PLAYER_X);
+            System.out.println("multiGame.getInTurn() = " + multiGame.getInTurn());
 
-        } else if (resultId.startsWith("selected_o")) {
+        }
+        System.out.println("multiGame = " + multiGame);
+        MultiGame savedMultiGame = dto.getMultiGameRepository().save(multiGame);
+        System.out.println("savedMultiGame = " + savedMultiGame);
+    }
+}
 
-            // Agar Player X allaqachon shu odam bo'lsa, ruxsat bermaslik
+
+/* in a future version of bot
+     else if (resultId.startsWith("selected_o")) {
+
+            /// Agar Player X shu odam bo'lsa, ruxsat bermaslik
             if (multiGame.getPlayerX() != null && userId.equals(multiGame.getPlayerX().getId())) {
 
                 dto.getTelegramBot().execute(
@@ -87,7 +109,4 @@ public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
             multiGame.setPlayerO(multiGameUser);
             multiGame.setInTurn(Turn.PLAYER_X);
         }
-
-        dto.getMultiGameRepository().save(multiGame);
-    }
-}
+*/

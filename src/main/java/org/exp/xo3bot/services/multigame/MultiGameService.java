@@ -2,6 +2,7 @@ package org.exp.xo3bot.services.multigame;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
@@ -21,66 +22,81 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MultiGameService {
 
-
     private final MultiGameUserRepository multiGameUserRepository;
     private final MultiGameRepository multiGameRepository;
+
+    private final MultiGameUserService multiGameUserService;
 
     private final TelegramBot telegramBot;
     private final BotButtons buttons;
     private final UserService userService;
 
 
-    public void gamePlayersInfoFiller(MultiGame multiGame, Long userId, CallbackQuery callbackQuery) {
-        Optional<MultiGameUser> optionalMultiGameUser = multiGameUserRepository.findById(userId);
+    public MultiGame gamePlayersInfoFiller(MultiGame multiGame, Long userId, CallbackQuery callbackQuery) {
+        //Optional<MultiGameUser> optionalMultiGameUser = multiGameUserRepository.findById(userId);
 
-        if (multiGame.getPlayerX() == null && !multiGame.getPlayerO().getId().equals(userId)) {
-            if (optionalMultiGameUser.isEmpty()) {
-                MultiGameUser playerX = MultiGameUser.builder()
-                        .id(userId)
-                        .fullname(userService.buildFullNameFromUpdate(callbackQuery))
-                        .username(callbackQuery.from().username())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .build();
-                multiGame.setPlayerX(playerX);
+        MultiGameUser player = multiGameUserService.getOrCreatePlayer(callbackQuery);
 
-            } else {
-                multiGame.setPlayerO(optionalMultiGameUser.get());
-            }
+        if (multiGame.getPlayerX() == null) {
 
-        } else if (multiGame.getPlayerO() == null && !multiGame.getPlayerX().getId().equals(userId)) {
-            if (optionalMultiGameUser.isEmpty()) {
-                MultiGameUser playerO = MultiGameUser.builder()
-                        .id(userId)
-                        .fullname(userService.buildFullNameFromUpdate(callbackQuery))
-                        .username(callbackQuery.from().username())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .languageCode(callbackQuery.from().languageCode())
-                        .build();
-                multiGame.setPlayerO(playerO);
+            if (!multiGame.getPlayerO().getId().equals(userId)){
+                multiGame.setPlayerX(player);
 
-            } else {
-                multiGame.setPlayerO(optionalMultiGameUser.get());
-            }
+                telegramBot.execute(
+                        new EditMessageText(multiGame.getInlineMessageId(),
+                                "❌" + multiGame.getPlayerX().getFullname()
+                                        +
+                                        "\n⭕" + multiGame.getPlayerO().getFullname()
+                        ).replyMarkup(buttons.getBoardBtns(multiGame.getId(), multiGame.getGameBoard()))
+                );
 
-            telegramBot.execute(
-                    new EditMessageText(multiGame.getInlineMessageId(),
-                            "❌" + multiGame.getPlayerX().getFullname()
-                                    +
-                                    "\n⭕" + multiGame.getPlayerO().getFullname()
-                    ).replyMarkup(buttons.getBoardBtns(multiGame.getId(), multiGame.getGameBoard()))
-            );
+                saveGame(multiGame);
+
+            }/* else {
+                telegramBot.execute(
+                        new AnswerCallbackQuery(callbackQuery.id()).text("You played with X").showAlert(true)
+                );
+                //return null;
+            }*/
+
+        } else if (multiGame.getPlayerO() == null) {
+
+            if (!multiGame.getPlayerX().getId().equals(userId)){
+                multiGame.setPlayerO(player);
+
+                telegramBot.execute(
+                        new EditMessageText(multiGame.getInlineMessageId(),
+                                "❌" + multiGame.getPlayerX().getFullname()
+                                        +
+                                        "\n⭕" + multiGame.getPlayerO().getFullname()
+                        ).replyMarkup(buttons.getBoardBtns(multiGame.getId(), multiGame.getGameBoard()))
+                );
+
+                saveGame(multiGame);
+
+            } /*else {
+                telegramBot.execute(
+                        new AnswerCallbackQuery(callbackQuery.id()).text("You played with X").showAlert(true)
+                );
+                //return null;
+            }*/
         }
+
+        return multiGameRepository.save(multiGame);
     }
 
 
     public MultiGame getOrCreateMultiGame() {
-        MultiGame multiGame;
+        System.out.println("MultiGameService.getOrCreateMultiGame");
+        MultiGame multiGame = null;
+
         Optional<MultiGame> multiGameByStatus = multiGameRepository.findFirstByStatus();
+        System.out.println("multiGameByStatus = " + multiGameByStatus);
 
         if (multiGameByStatus.isPresent()) {
             multiGame = multiGameByStatus.get();
+
+            System.out.println("multiGame = " + multiGame);
 
             multiGame.setCreatorId(null);
             multiGame.setStatus(GameStatus.ACTIVE);
@@ -101,7 +117,10 @@ public class MultiGameService {
                     .status(GameStatus.CREATED)
                     .gameBoard(new int[3][3])
                     .build();
+            System.out.println("multiGame = " + multiGame);
         }
+
+        System.out.println("multiGame = " + multiGame);
         return multiGame;
     }
 

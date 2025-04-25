@@ -157,7 +157,7 @@ public class MultiGameLogic {
 
             if (game.getPlayerO() != null) {
 
-               switchTurn(game);
+                switchTurn(game);
 
             } else {
                 game.setInTurn(Turn.PLAYER_O);

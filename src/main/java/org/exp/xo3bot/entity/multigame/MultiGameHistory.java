@@ -15,7 +15,8 @@ import org.exp.xo3bot.entity.BaseEntity;
 @Entity
 public class MultiGameHistory extends BaseEntity {
 
-
+@Column(name = "total_games")
+private int totalGames;
 
 }
 */

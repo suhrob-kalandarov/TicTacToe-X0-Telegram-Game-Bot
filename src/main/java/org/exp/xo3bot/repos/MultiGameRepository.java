@@ -17,8 +17,8 @@ public interface MultiGameRepository extends JpaRepository<MultiGame, Long> {
 
 
     @Query("""
-            SELECT m FROM MultiGame m 
-            WHERE m.status IN ('DEAD', 'CREATED', 'DEAD_LOCK', 'IDLE')
+            SELECT m FROM MultiGame m
+            WHERE m.status IN ('DEAD', 'FINISHED', 'DEAD_LOCK', 'IDLE')
             ORDER BY m.id ASC
             LIMIT 1
         """)
