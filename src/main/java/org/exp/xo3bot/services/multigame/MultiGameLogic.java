@@ -121,7 +121,7 @@ public class MultiGameLogic {
         }
 
         if (board[row][col] != 0) {
-            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move!"));
+            telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("Invalid move! 👈"));
             return;
         }
 
@@ -138,7 +138,7 @@ public class MultiGameLogic {
 
             EditMessageText winMessage = new EditMessageText(
                     game.getInlineMessageId(),
-                    "🏆 " + winnerName + " won the game!"
+                    "Winner, winner, chicken dinner!\n🏆 " + winnerName
             ).replyMarkup(buttons.endMultiGameBtns());
 
             telegramBot.execute(winMessage);
@@ -148,20 +148,18 @@ public class MultiGameLogic {
 
             EditMessageText drawMessage = new EditMessageText(
                     game.getInlineMessageId(),
-                    "🤝 It's a draw!"
+                    "It's a draw!\n" + game.getPlayerX().getFullname() + " 🤝 " + game.getPlayerO().getFullname()
             ).replyMarkup(buttons.endMultiGameBtns());
 
             telegramBot.execute(drawMessage);
 
         } else {
 
-            if (game.getPlayerO() != null) {
-
-                switchTurn(game);
-
+            switchTurn(game);
+            /*if (game.getPlayerO() != null) {
             } else {
                 game.setInTurn(Turn.PLAYER_O);
-            }
+            }*/
 
             InlineKeyboardMarkup markup = buttons.getBoardBtns(gameId, board);
             EditMessageReplyMarkup replyMarkup = new EditMessageReplyMarkup(

@@ -33,12 +33,12 @@ public class MultiGameUserService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             MultiGameUser savedMultiGameUser = multiGameUserRepository.save(multiGameUser);
-            System.out.println("savedMultiGameUser = " + savedMultiGameUser);
+            System.err.println("savedMultiGameUser = " + savedMultiGameUser);
             return savedMultiGameUser;
 
         } else {
             multiGameUser = optionalMultiGameUser.get();
-            System.out.println("multiGameUser = " + multiGameUser);
+            System.err.println("multiGameUser = " + multiGameUser);
             return multiGameUser;
         }
     }
@@ -48,7 +48,7 @@ public class MultiGameUserService {
         Long userId = chosenInlineResult.from().id();
 
         Optional<MultiGameUser> optionalMultiGameUser = multiGameUserRepository.findById(userId);
-        System.out.println("optionalMultiGameUser findById(" + userId + ") = " + optionalMultiGameUser);
+        System.err.println("optionalMultiGameUser findById(" + userId + ") = " + optionalMultiGameUser);
 
         if (optionalMultiGameUser.isEmpty()) {
             multiGameUser = MultiGameUser.builder()
@@ -57,17 +57,17 @@ public class MultiGameUserService {
                     .username(chosenInlineResult.from().username())
                     .languageCode(chosenInlineResult.from().languageCode())
                     .build();
-            System.out.println("Build multiGameUser = " + multiGameUser);
+            System.err.println("Build multiGameUser = " + multiGameUser);
 
-            System.out.println("multiGameUser = " + multiGameUser);
+            System.err.println("multiGameUser = " + multiGameUser);
             MultiGameUser savedMultiGameUser = multiGameUserRepository.save(multiGameUser);
-            System.out.println("savedMultiGameUser = " + savedMultiGameUser);
+            System.err.println("savedMultiGameUser = " + savedMultiGameUser);
 
             return savedMultiGameUser;
 
         } else {
             multiGameUser = optionalMultiGameUser.get();
-            System.out.println("Get multiGameUserFromDB = " + multiGameUser);
+            System.err.println("Get multiGameUserFromDB = " + multiGameUser);
             return multiGameUser;
         }
     }

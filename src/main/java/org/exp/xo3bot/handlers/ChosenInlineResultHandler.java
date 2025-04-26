@@ -25,48 +25,47 @@ public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
     @Override
     public void handle(ChosenInlineResult chosenInlineResult) {
 
-        System.out.println("ChosenInlineResultHandler.handle" + chosenInlineResult.toString());
+        System.err.println("ChosenInlineResultHandler.handle" + chosenInlineResult.toString());
 
         String inlinedMessageId = chosenInlineResult.inlineMessageId();
         String resultId = chosenInlineResult.resultId();
-        Long userId = chosenInlineResult.from().id();
 
         Pattern pattern = Pattern.compile("selected_[xo]_(\\d+)");
-        System.out.println("pattern = " + pattern);
+        System.err.println("pattern = " + pattern);
 
         Matcher matcher = pattern.matcher(resultId);
-        System.out.println("matcher = " + matcher);
+        System.err.println("matcher = " + matcher);
 
         if (!matcher.matches()) {
-            System.out.println("Not matches :!: " + matcher);
+            System.err.println("Not matches :!: " + matcher);
             return;
         }
 
         Long gameId = Long.parseLong(matcher.group(1));
-        System.out.println("gameId = " + gameId);
+        System.err.println("gameId = " + gameId);
 
         Optional<MultiGame> optionalMultiGame = dto.getMultiGameRepository().findById(gameId);
-        System.out.println("optionalMultiGame = " + optionalMultiGame);
+        System.err.println("optionalMultiGame = " + optionalMultiGame);
 
         if (optionalMultiGame.isEmpty()) {
-            System.out.println("Not found optionalMultiGame = " + optionalMultiGame);
+            System.err.println("Not found optionalMultiGame = " + optionalMultiGame);
             return;
         }
 
         MultiGame multiGame = optionalMultiGame.get();
-        System.out.println("multiGame = " + multiGame);
+        System.err.println("multiGame = " + multiGame);
 
         multiGame.setInlineMessageId(inlinedMessageId);
-        System.out.println("inlinedMessageId = " + inlinedMessageId);
-        System.out.println("multiGame.getInlineMessageId() = " + multiGame.getInlineMessageId());
+        System.err.println("inlinedMessageId = " + inlinedMessageId);
+        System.err.println("multiGame.getInlineMessageId() = " + multiGame.getInlineMessageId());
 
         MultiGameUser multiGameUser = multiGameUserService.getOrCreatePlayer(chosenInlineResult);
 
         if (resultId.startsWith("selected_x")) {
-            System.out.println("resultId = " + resultId);
+            System.err.println("resultId = " + resultId);
 
             /// Agar Player O allaqachon shu odam bo'lsa, ruxsat bermaslik
-            if (multiGame.getPlayerO() != null && userId.equals(multiGame.getPlayerO().getId())) {
+            /*if (multiGame.getPlayerO() != null && userId.equals(multiGame.getPlayerO().getId())) {
 
                 dto.getTelegramBot().execute(
                         new AnswerCallbackQuery(inlinedMessageId).text("User(" + userId + ") already joined as O !")
@@ -74,21 +73,21 @@ public class ChosenInlineResultHandler implements Handler<ChosenInlineResult> {
 
                 System.out.println("User(" + userId + ") already joined as O");
                 return;
-            }
+            }*/
 
 
-            System.out.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
+            System.err.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
             multiGame.setPlayerX(multiGameUser);
-            System.out.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
+            System.err.println("multiGame.getPlayerX() = " + multiGame.getPlayerX());
 
-            System.out.println("multiGame.getInTurn() = " + multiGame.getInTurn());
+            System.err.println("multiGame.getInTurn() = " + multiGame.getInTurn());
             multiGame.setInTurn(Turn.PLAYER_X);
-            System.out.println("multiGame.getInTurn() = " + multiGame.getInTurn());
+            System.err.println("multiGame.getInTurn() = " + multiGame.getInTurn());
 
         }
-        System.out.println("multiGame = " + multiGame);
+        System.err.println("multiGame = " + multiGame);
         MultiGame savedMultiGame = dto.getMultiGameRepository().save(multiGame);
-        System.out.println("savedMultiGame = " + savedMultiGame);
+        System.err.println("savedMultiGame = " + savedMultiGame);
     }
 }
 

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.exp.xo3bot.dtos.MainDto;
 import org.exp.xo3bot.entity.multigame.MultiGame;
 import org.exp.xo3bot.entity.multigame.MultiGameUser;
+import org.exp.xo3bot.entity.multigame.Turn;
 import org.exp.xo3bot.entity.stats.GameStatus;
 import org.exp.xo3bot.repos.MultiGameRepository;
 import org.exp.xo3bot.repos.MultiGameUserRepository;
@@ -37,7 +38,7 @@ public class MultiGameService {
 
         MultiGameUser player = multiGameUserService.getOrCreatePlayer(callbackQuery);
 
-        if (multiGame.getPlayerX() == null) {
+        /*if (multiGame.getPlayerX() == null) {
 
             if (!multiGame.getPlayerO().getId().equals(userId)){
                 multiGame.setPlayerX(player);
@@ -52,14 +53,15 @@ public class MultiGameService {
 
                 saveGame(multiGame);
 
-            }/* else {
+            }*//* else {
                 telegramBot.execute(
                         new AnswerCallbackQuery(callbackQuery.id()).text("You played with X").showAlert(true)
                 );
                 //return null;
-            }*/
+            }*//*
 
-        } else if (multiGame.getPlayerO() == null) {
+        } else */
+        if (multiGame.getPlayerO() == null) {
 
             if (!multiGame.getPlayerX().getId().equals(userId)){
                 multiGame.setPlayerO(player);
@@ -68,7 +70,7 @@ public class MultiGameService {
                         new EditMessageText(multiGame.getInlineMessageId(),
                                 "❌" + multiGame.getPlayerX().getFullname()
                                         +
-                                        "\n⭕" + multiGame.getPlayerO().getFullname()
+                                        " 👈\n⭕" + multiGame.getPlayerO().getFullname()
                         ).replyMarkup(buttons.getBoardBtns(multiGame.getId(), multiGame.getGameBoard()))
                 );
 
@@ -86,7 +88,7 @@ public class MultiGameService {
     }
 
 
-    public MultiGame getOrCreateMultiGame() {
+    public MultiGame getOrCreateMultiGame(Long creatorId) {
         System.out.println("MultiGameService.getOrCreateMultiGame");
         MultiGame multiGame = null;
 
@@ -98,22 +100,23 @@ public class MultiGameService {
 
             System.out.println("multiGame = " + multiGame);
 
-            multiGame.setCreatorId(null);
+            multiGame.setCreatorId(creatorId);
             multiGame.setStatus(GameStatus.ACTIVE);
 
             multiGame.setInlineMessageId(null);
 
             multiGame.setPlayerO(null);
             multiGame.setPlayerX(null);
-            multiGame.setInTurn(null);
+            multiGame.setInTurn(Turn.PLAYER_X);
 
             multiGame.setUpdatedAt(LocalDateTime.now());
 
-            multiGame.setGameBoard(new int[3][3]);
-            //multiGame.initGameBoard();
+            //multiGame.setGameBoard(new int[3][3]);
+            multiGame.initGameBoard();
 
         } else {
             multiGame = MultiGame.builder()
+                    .creatorId(creatorId)
                     .status(GameStatus.CREATED)
                     .gameBoard(new int[3][3])
                     .build();
@@ -121,6 +124,7 @@ public class MultiGameService {
         }
 
         System.out.println("multiGame = " + multiGame);
+        saveGame(multiGame);
         return multiGame;
     }
 
