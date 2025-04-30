@@ -42,6 +42,7 @@ public class CallbackHandler implements Handler<CallbackQuery> {
 
         } else if (data.startsWith(Constants.LEVEL)) {
             process = new DifficultyChangerMenuCmd(user, data, dto);
+
         }
         Objects.requireNonNull(process).run();
     }
